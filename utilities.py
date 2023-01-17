@@ -45,8 +45,6 @@ def arrayToString(text):
 	x = ' '.join(text)
 	return x
 
-
-
 # Carga de datos
 
 def carga_datos(database):
@@ -163,7 +161,18 @@ def carga_datos_expertos(database):
     df['studies'] = df['studies'].apply(lambda x: re.sub(' ', '', x))
 
     # Unir varias columnas en una sola nueva con las palabras que me interesan para el modelo
-    df['all_about_me'] = df['area'] + ', ' + df['studies'] + ', ' + df['year_birth'] + ', ' + df['years_in'] + ', ' + df['working'] + ', ' + df['gender']
+    if df['support_type'] == 'Orientacion sobre temas legales':
+        df['all_about_me'] = df['area'] + ', ' + df['year_birth'] + ', ' + df['years_in'] + ', ' + df['working']
+        
+    if df['support_type'] == 'Orientacion sobre tramites':
+        df['all_about_me'] = df['area'] + ', ' + df['year_birth'] + ', ' + df['years_in'] + ', ' + df['working']
+        
+    elif df['support_type'] == 'Orientacion laboral':
+        df['all_about_me'] = df['area'] + ', ' + df['working'] + ', ' + df['studies']
+        
+    else:
+        df['all_about_me'] = df['area'] + ', ' + df['year_birth'] + ', ' + df['about_me'] + ', ' + df['gender']        
+    
 
     # Tokenizar las palabras de la columna all_about_me para el modelo y eliminar stopwords y signos de puntuación 
     df['all_about_me'] = df['all_about_me'].apply(lambda x: nltk.word_tokenize(x))
@@ -191,18 +200,3 @@ def carga_datos_expertos(database):
     SimilDF = pd.DataFrame(data = Simil.toarray(), index=listado.values,columns=listado.values)
 
     return SimilDF
-
-    # Función que ejecuta todas las funciones anteriores para poder realizarlo en una sola vez
-
-def automatizacion(ID_usuario, database):
-    
-    datos_usuario, apoyo = lista_datos(ID_usuario, database)
-
-    df_support = tipo_apoyo(apoyo, database)
-
-    df_salida = filtro_idioma(datos_usuario, df_support)
-
-    if ID_usuario not in df_salida.user_id.values:
-        df_salida = df_salida.append(database[database.user_id == ID_usuario])
-
-    return df_salida
