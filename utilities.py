@@ -161,13 +161,13 @@ def carga_datos_expertos(database):
     df['studies'] = df['studies'].apply(lambda x: re.sub(' ', '', x))
 
     # Unir varias columnas en una sola nueva con las palabras que me interesan para el modelo
-    if df['support_type'] == 'Orientacion sobre temas legales':
+    if (df["support_type"].unique()[0] == 'Orientacion sobre temas legales'):
         df['all_about_me'] = df['area'] + ', ' + df['year_birth'] + ', ' + df['years_in'] + ', ' + df['working']
         
-    if df['support_type'] == 'Orientacion sobre tramites':
+    elif (df["support_type"].unique()[0] == 'Orientacion sobre tramites'):
         df['all_about_me'] = df['area'] + ', ' + df['year_birth'] + ', ' + df['years_in'] + ', ' + df['working']
         
-    elif df['support_type'] == 'Orientacion laboral':
+    elif (df["support_type"].unique()[0] == 'Orientacion laboral'):
         df['all_about_me'] = df['area'] + ', ' + df['working'] + ', ' + df['studies']
         
     else:
