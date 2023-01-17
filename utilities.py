@@ -191,3 +191,18 @@ def carga_datos_expertos(database):
     SimilDF = pd.DataFrame(data = Simil.toarray(), index=listado.values,columns=listado.values)
 
     return SimilDF
+
+    # Función que ejecuta todas las funciones anteriores para poder realizarlo en una sola vez
+
+def automatizacion(ID_usuario, database):
+    
+    datos_usuario, apoyo = lista_datos(ID_usuario, database)
+
+    df_support = tipo_apoyo(apoyo, database)
+
+    df_salida = filtro_idioma(datos_usuario, df_support)
+
+    if ID_usuario not in df_salida.user_id.values:
+        df_salida = df_salida.append(database[database.user_id == ID_usuario])
+
+    return df_salida
