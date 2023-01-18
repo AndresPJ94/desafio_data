@@ -15,7 +15,7 @@ df=pd.read_csv("database.csv",encoding='UTF-8')
 
 """
 La petición sería:
-http://127.0.0.1:5000/expertos?ID=180 
+http://127.0.0.1:5000/expertos?ID=115 method: GET
 """
 @app.route('/expertos', methods = ['GET'])
 def expertos():
@@ -50,7 +50,7 @@ def expertos():
 
 """
 La petición sería:
-http://127.0.0.1:5000/comunidad?ID=18
+http://127.0.0.1:5000/comunidad?ID=115 method: GET
 """
 @app.route('/comunidad', methods = ['GET'])
 def comunidad():
