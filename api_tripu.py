@@ -6,12 +6,30 @@ import nltk
 import re
 import string
 import utilities as ut
-
+import mysql.connector
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
-df=pd.read_csv("database.csv",encoding='UTF-8')
+configuracion = {
+  'host':'serviciodbcruzroja.mysql.database.azure.com',
+  'user':'desafiocruzrojagrupo2',
+  'password':'d3s4fi0cruzr0j4grup02pass..?',
+  'database':'dbtest',
+  'client_flags': [mysql.connector.ClientFlag.SSL],
+  'ssl_ca': 'DigiCertGlobalRootCA.crt.pem'  
+}
+conn = mysql.connector.connect(**configuracion)
+cursor = conn.cursor()
+sql = '''SELECT * FROM users'''
+cursor.execute(sql)
+mi_tabla = cursor.fetchall()
+
+df = pd.DataFrame(mi_tabla)
+columnas = ['user_id','user_name','user_surname','email','password_','year_birth','gender',
+            'mother_tongue','years_in','studies','working','support_type','expert','area',
+            'about_me','date','country','pic','fecha']
+df.columns = columnas
 
 """
 La petición sería:
@@ -64,7 +82,7 @@ def comunidad():
         else:
             def RecomendacionUsuario(Top, ID_usuario):
                 ID_usuario = ID_usuario - 1
-                #database = df.copy()
+                
                 RecomendacionUsuario = ut.carga_datos(df).iloc[(-ut.carga_datos(df).iloc[:, ID_usuario]).argsort()[1:(Top+1)].values, ID_usuario]
                 
                 filtrado = pd.DataFrame()
@@ -82,6 +100,8 @@ def comunidad():
         return "Error in args"
 
 
-
+conn.commit()
+cursor.close()
+conn.close()
 
 app.run()
